@@ -54,7 +54,8 @@
 
 #ifdef __BPF_TRACING__
 #ifdef EBPF_CO_RE
-typedef struct pt_regs procmon_pt_regs;
+// CO-RE must match the kernel's type name, not a local typedef.
+#define procmon_pt_regs struct pt_regs
 #else
 typedef struct
 {
