@@ -275,6 +275,7 @@ add_custom_target(rpm
 set(EBPF_DEPENDS
     "${PROCMON_EBPF_SRC}/procmonGenericEntry_rawtp.c"
     "${PROCMON_EBPF_SRC}/procmonGenericExit_rawtp.c"
+    "${PROCMON_EBPF_SRC}/procmonEBPF_common.h"
    )
 
 set(EBPF_PROGS

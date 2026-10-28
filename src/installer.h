@@ -18,8 +18,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-
-#define PROCMON_EBPF_INSTALL_DIR "/tmp"
+#include <string>
 
 #define KERN_4_16_OBJ           "procmonEBPFkern4.16.o"
 #define KERN_4_17_5_1_OBJ       "procmonEBPFkern4.17-5.1.o"
@@ -35,5 +34,6 @@
 
 bool ExtractEBPFPrograms();
 bool DeleteEBPFPrograms();
+const std::string& GetEBPFInstallDirectory();
 
 #endif
