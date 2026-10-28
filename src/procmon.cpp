@@ -15,6 +15,7 @@
 */
 
 #include <iostream>
+#include <cstdlib>
 #include <version.h>
 #include <unistd.h>
 
@@ -49,8 +50,19 @@ int main(int argc, char *argv[])
     */
     curs_set(0);
 
-    // Extrace eBPF programs
-    ExtractEBPFPrograms();
+    if (!ExtractEBPFPrograms())
+    {
+        curs_set(1);
+        return EXIT_FAILURE;
+    }
+    // Configuration parsing can exit before normal shutdown.
+    if (std::atexit([] { DeleteEBPFPrograms(); }) != 0)
+    {
+        std::cerr << "Cannot register eBPF cleanup\n";
+        DeleteEBPFPrograms();
+        curs_set(1);
+        return EXIT_FAILURE;
+    }
 
     // Program initialization: create global config from args
     auto config = std::make_shared<ProcmonConfiguration>(argc, argv);
@@ -110,7 +122,11 @@ int main(int argc, char *argv[])
     curs_set(1);
 
     config->GetTracer()->Cancel();
-    DeleteEBPFPrograms();
+    config.reset();
+    if (!DeleteEBPFPrograms())
+    {
+        return EXIT_FAILURE;
+    }
 
     return 0;
 }

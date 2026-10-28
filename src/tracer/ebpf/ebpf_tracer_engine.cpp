@@ -15,6 +15,7 @@
 */
 
 #include "ebpf_tracer_engine.h"
+#include "../../installer.h"
 #include "../../logging/easylogging++.h"
 #include <iostream>
 #include <limits.h>
@@ -441,7 +442,7 @@ void EbpfTracerEngine::Poll()
         }
     };
 
-    const char* defPaths[] = {"./", "./procmonEBPF", "/tmp/"};
+    const char* defPaths[] = {GetEBPFInstallDirectory().c_str()};
 
     const ebpfTelemetryConfig procmonConfig = (ebpfTelemetryConfig)
     {
@@ -597,4 +598,3 @@ void EbpfTracerEngine::AddPids(std::vector<int> pidsToTrace)
         telemetryMapUpdateElem(mapFds[PIDS_INDEX], &i, &pidsToTrace[i], MAP_UPDATE_CREATE_OR_OVERWRITE);
     }
 }
-
