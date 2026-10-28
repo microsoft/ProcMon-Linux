@@ -75,33 +75,6 @@ make
 sudo ./procmon
 ```
 
-Procmon extracts its embedded eBPF objects into a fresh, owner-only
-`/tmp/procmon-XXXXXX` directory for each invocation and loads objects only from
-that directory. Objects in the working directory, `./procmonEBPF`, or directly
-under `/tmp` are not used. To test modified eBPF code, rebuild Procmon so the
-updated objects are embedded. Normal exit removes the extracted objects;
-forced termination (for example, `SIGKILL`) can leave the private directory.
-
-### Extraction regression tests
-
-On Linux, run `python3 tests/installer.test.py` with `g++` installed. The tests
-compile the real extraction code against a deliberately unhardened `dropFile`
-test double, without requiring root or loading eBPF. They check directory and
-file permissions, all eight embedded objects, partial failures, concurrent
-process isolation, and scoped cleanup. Source-contract checks cover the
-loader's sole search path and the startup failure gate.
-
-For end-to-end verification on a disposable Linux VM, build and run
-`sudo ./build/procmon -c /absolute/path/to/capture.db`, generate filesystem
-activity, stop with Ctrl+C, and inspect the capture with
-`sudo ./build/procmon -f /absolute/path/to/capture.db`. Confirm the live
-extraction directory is root-owned with mode `0700` and disappears on normal
-exit. Repeat with two instances and ensure stopping one does not remove the
-other's objects. In an isolated test `/tmp`, place harmless invalid objects in
-the former search locations and symlinks at the former extraction filenames
-pointing to a disposable sentinel: capture must still work and the sentinel
-must remain unchanged.
-
 ## Make Packages
 Packages can be generated with:
 ```
